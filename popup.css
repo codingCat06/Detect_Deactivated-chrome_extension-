@@ -1,0 +1,7 @@
+body { min-width: 350px; font-family: sans-serif; background: #f4f4f4; }
+h1 { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 16px; }
+div { margin-bottom: 12px; }
+input[type="number"] { width: 56px; }
+table { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px #0001; width: 100%; margin-bottom: 16px; border-collapse: collapse; }
+th, td { padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
+th { background: #f0f0ff; }
