@@ -105,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let val = parseInt(document.getElementById('thresholdInput').value, 10);
     if (isNaN(val) || val < 1) val = 1;
     chrome.runtime.sendMessage({type: "setThreshold", threshold: val}, () => {
-      currentThreshold = val;
-      updateList();
-    });
+        chrome.storage.local.set({threshold: val}); // ✅ 영구 저장
+        currentThreshold = val;
+        updateList();
+      });
+    
   };
 });
 
@@ -138,3 +140,5 @@ function formatStatus(tab) {
   });
   
     
+
+  

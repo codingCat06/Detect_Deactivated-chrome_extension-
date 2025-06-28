@@ -1,7 +1,14 @@
 let tabStatus = {};
 let threshold = 60; // 분 단위 임계값, 기본 60
 let currentActiveTabId = null;
-
+chrome.storage.local.get("threshold", (result) => {
+    if (typeof result.threshold === "number" && result.threshold > 0) {
+      threshold = result.threshold;
+      console.log("✅ 저장된 threshold 불러옴:", threshold);
+    } else {
+      console.log("ℹ️ 저장된 threshold 없음, 기본값 사용:", threshold);
+    }
+  });
 // 탭 생성
 chrome.tabs.onCreated.addListener(tab => {
   tabStatus[tab.id] = {
@@ -54,14 +61,19 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   console.log(tabStatus[currentActiveTabId]);
 });
 
+
+
 // 단일 onMessage 리스너로 통합
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // 임계값 설정
-  if (msg.type === "setThreshold" && typeof msg.threshold === 'number') {
-    threshold = msg.threshold;
-    sendResponse({ok: true});
-    return true;
-  }
+
+    if (msg.type === "setThreshold" && typeof msg.threshold === "number") {
+        threshold = msg.threshold;
+        chrome.storage.local.set({ threshold: threshold }, () => {
+          console.log("💾 threshold 저장됨:", threshold);
+          sendResponse({ ok: true });
+        });
+        return true; // 비동기 응답 처리
+      }
   // 임계값 요청
   if (msg.type === "getThreshold") {
     sendResponse({threshold});
@@ -122,5 +134,3 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }
   });
 
-  
-  
