@@ -3,13 +3,21 @@
     "name": "Detect_Deactivated",
     "version": "1.0",
     "description": "Visually alert idle tabs and view usage stats.",
-    "permissions": ["tabs", "storage"],
+    "permissions": ["scripting", "tabs"],
     "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+      }
+    ],
     "background": {
       "service_worker": "background.js"
     },
     "action": {
       "default_popup": "popup.html"
     }
+  
   }
   

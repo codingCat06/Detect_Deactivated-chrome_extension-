@@ -3,5 +3,99 @@ h1 { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 16px
 div { margin-bottom: 12px; }
 input[type="number"] { width: 56px; }
 table { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px #0001; width: 100%; margin-bottom: 16px; border-collapse: collapse; }
-th, td { padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
+th, td { height:100%; padding: 4px; border-bottom: 1px solid #eee; text-align: left;  vertical-align: middle;}
+
 th { background: #f0f0ff; }
+
+  .cell-right {
+    text-align: right;
+  }
+  
+  .cell-left {
+    text-align: left;
+  }
+  
+  .cell-center {
+    text-align: center;
+  }
+  
+  .gray {
+    color: #888;
+  }
+
+  
+  
+  .section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 8px 0;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 12px;
+  }
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed; 
+  }
+
+  table {
+    border-collapse: collapse; 
+  }
+  
+  .popup-root {
+    padding: 4px;
+  }
+
+
+
+  .title-col {
+    width: 180px;
+    max-width: 185px;
+
+    overflow: hidden;
+    padding: 6px 2px
+  }
+  
+  .half-col {
+    width: 76px 
+  }
+  .tab-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    height:100%;
+    
+}
+  
+.title-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;      /* ✅ 최대 3줄까지만 보여줌 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  
+  .close-btn {
+    border: none;
+    background: transparent;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px;
+  }
+  
+  .close-btn:hover {
+    color: #e00;
+  }
+  

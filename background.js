@@ -34,6 +34,7 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   // 이전 탭 사용 종료
   if (currentActiveTabId !== null && tabStatus[currentActiveTabId]) {
+
     tabStatus[currentActiveTabId].lastDeactivated = Date.now();
   }
   // 새 탭 사용 시작
@@ -50,6 +51,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   } else {
     tabStatus[currentActiveTabId].lastActivated = Date.now();
   }
+  console.log(tabStatus[currentActiveTabId]);
 });
 
 // 단일 onMessage 리스너로 통합
@@ -71,9 +73,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const millisec = threshold * 60 * 1000;
     const result = Object.entries(tabStatus).map(([tabId, data]) => {
       const isActive = (parseInt(tabId) === currentActiveTabId);
-      const totalUsed = isActive
-        ? now - data.createdAt
-        : (data.lastDeactivated ? data.lastDeactivated - data.createdAt : now - data.createdAt);
+      const totalUsed = isActive ? 0 : (now - data.lastDeactivated);
       return {
         ...data,
         tabId,
@@ -86,3 +86,41 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    // 기존에 등록된 탭에 대해서만 title, url 갱신
+    if (tabStatus[tabId]) {
+      if (changeInfo.title || tab.title) {
+        tabStatus[tabId].title = tab.title || changeInfo.title;
+      }
+      if (changeInfo.url || tab.url) {
+        tabStatus[tabId].url = tab.url || changeInfo.url;
+      }
+    }
+  });
+  
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === "tabMemory") {
+      const tabId = sender.tab?.id;
+      const usedMB = message.usedMB;
+  
+      if (typeof tabId === "number" && tabStatus[tabId]) {
+        tabStatus[tabId].usedMB = usedMB;
+        console.log(`📥 메모리 수신 [tabId: ${tabId}] - ${usedMB}MB`);
+      } else {
+        console.warn("❌ 메모리 수신 실패: 유효하지 않은 탭이거나 저장되지 않은 tabId", tabId);
+      }
+  
+      sendResponse({ status: "ok" });
+      return true;
+    }
+  
+    if (message.ping) {
+      sendResponse({ pong: true });
+      return true;
+    }
+  });
+
+  
+  

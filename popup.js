@@ -32,11 +32,12 @@ function renderTabs(tabList) {
   function row(tab) {
     const usedTime = calcTotalUsed(tab);
     return `
-      <tr class="border-b last:border-none">
-        <td class="px-2 py-1 break-all max-w-[150px]">${tab.title || tab.url}</td>
-        <td class="px-2 py-1 text-right">${formatStatus(tab)}</td>
-        <td class="px-2 py-1 text-right">${tab.thresholdExceeded ? '🔥' : '🟢'}</td>
-      </tr>
+    <tr>
+    <td><button class="close-btn" data-tabid="${tab.tabId}" title="탭 닫기">x</button></td>
+    <td class="cell title-col">${tab.title || tab.url}</td>
+    <td class="cell cell-center">${formatStatus(tab)}</td>
+    <td class="cell cell-center">${tab.usedMB ? tab.usedMB.toFixed(1) + "MB" : "-"}</td>
+  </tr>
     `;
   }
 
@@ -46,13 +47,15 @@ function renderTabs(tabList) {
       <table class="min-w-full bg-white text-sm">
         <thead>
           <tr>
-            <th class="px-2 py-1 text-left">페이지</th>
-            <th class="px-2 py-1 text-right">누적 사용</th>
-            <th class="px-2 py-1 text-right">상태</th>
+            <th class='btn-th'></th>
+            <th class="title-col">페이지</th>
+            <th class="cell half-col cell-center">누적 사용</th>
+            <th class="cell half-col cell-center">메모리(MB)</th>
+          
           </tr>
         </thead>
         <tbody>
-          ${thresholdTabs.length ? thresholdTabs.map(row).join('') : '<tr><td colspan="3" class="text-gray-400 text-center py-2">없음</td></tr>'}
+          ${thresholdTabs.length ? thresholdTabs.map(row).join('') : '<tr><td/><td  class="text-gray-400 text-center py-2">없음</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -61,13 +64,15 @@ function renderTabs(tabList) {
       <table class="min-w-full bg-white text-sm">
         <thead>
           <tr>
-            <th class="px-2 py-1 text-left">페이지</th>
-            <th class="px-2 py-1 text-right">누적 사용</th>
-            <th class="px-2 py-1 text-right">상태</th>
+            <th class='btn-th'></th>
+            <th class="cell title-col">페이지</th>
+            <th class="cell half-col cell-center">누적 사용</th>
+            <th class="cell half-col cell-center">메모리(MB)</th>
+          
           </tr>
         </thead>
         <tbody>
-          ${normalTabs.length ? normalTabs.map(row).join('') : '<tr><td colspan="3" class="text-gray-400 text-center py-2">없음</td></tr>'}
+          ${normalTabs.length ? normalTabs.map(row).join('') : '<tr><td/><td  class="text-gray-400 text-center py-2">없음</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -106,16 +111,30 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 });
 
-// 5초마다 갱신
-setInterval(updateList, 10000);
+setInterval(updateList, 1000);
 
 function formatStatus(tab) {
     if (tab.isActive) return "사용중";
     if (tab.lastDeactivated) {
       const diff = Date.now() - tab.lastDeactivated;
-      if (diff < 60000) return "방금 전";
+      if (diff < 60000) return `${Math.floor(diff/1000)}초 전`;
       if (diff < 3600000) return `${Math.floor(diff/60000)}분 전`;
       return `${Math.floor(diff/3600000)}시간 전`;
     }
     return "-";
   }
+
+
+  
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('close-btn')) {
+      const tabId = parseInt(e.target.getAttribute('data-tabid'));
+      if (!isNaN(tabId)) {
+        chrome.tabs.remove(tabId, () => {
+          updateList(); // UI도 갱신
+        });
+      }
+    }
+  });
+  
+    

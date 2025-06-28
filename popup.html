@@ -3,16 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <title>탭 활동 현황</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=400,initial-scale=1" />
+  <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-    <div>
-      <label for="thresholdInput">임계값(분):</label>
-      <input id="thresholdInput" type="number" min="1" value="60" />
-      <button id="setThresholdBtn">설정</button>
+  <div class="popup-root">
+
+    <div id="page-list" class="tab-page active">
+      <!-- 목록 렌더링 영역 -->
+      <div id="tab-lists"></div>
     </div>
-    <div id="tab-lists"></div>
-    <script src="popup.js"></script>
-  </body>
-  
+    <div id="page-setting" class="tab-page">
+      <!-- 설정 영역 -->
+      <h2 class="set-title">설정</h2>
+      <div class="thresh" style="margin-bottom:20px;">
+        <label for="thresholdInput">임계값(분):</label>
+        <input id="thresholdInput" type="number" min="1" value="60" />
+        <button id="setThresholdBtn">설정</button>
+      </div>
+      <div style="color:#888; font-size:13px;">임계값은 "초과" 탭 분류 기준입니다.<br>설정값은 확장 기능을 다시 켜도 유지됩니다.</div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
 </html>
